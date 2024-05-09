@@ -28,6 +28,7 @@ export function ChatbotCard() {
     const [typingStartTime, setTypingStartTime] = useState<number | null>(null);
     const [typingTime, setTypingTime] = useState<number>(0);
     const [openDiscussion, setOpenDiscussion] = useState(false);
+    const [type, setType] = useState('');
     const [resetCount, setResetCount] = useState<number>(0);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     const { toast } = useToast()
@@ -72,13 +73,14 @@ export function ChatbotCard() {
                 content: response?.res ?? '',
                 userId: response.name,
             };
+            setType(response.type);
             updatedMessages = [...updatedMessages, hostMessage];
             await setMessagesInDB([userMessage, hostMessage]);
             setTimeout(async () => {
                 setMessages(updatedMessages);
                 setLoading(false);
                 setInputDisabled(false);
-            }, 2000);
+            }, 20000);
         } catch (error) {
             console.error('Error fetching data from OpenAI:', error);
             const errorMessage: Message = {
@@ -108,7 +110,7 @@ export function ChatbotCard() {
     }, [inputText]);
 
     useEffect(() => {
-        if (resetCount < 1 && typingTime >= 150 && typingTime <160) {
+        if (resetCount < 1 && typingTime >= 150 && typingTime < 160) {
             toast({
                 variant: "destructive",
                 title: '30 seconds left for this section',
@@ -119,7 +121,7 @@ export function ChatbotCard() {
             setOpenDiscussion(true);
         }
 
-        if (resetCount === 1 && typingTime >= 90 && typingTime <100) {
+        if (resetCount === 1 && typingTime >= 90 && typingTime < 100) {
             toast({
                 variant: "destructive",
                 title: '30 seconds left for this section',
@@ -157,7 +159,8 @@ export function ChatbotCard() {
             <Card className="w-full md:w-[650px] mt-10 mb-10 mx-auto border-0 md:border">
                 <div className="flex items-center justify-between">
                     <CardTitle className="text-base mt-5 mb-5 text-[#212B36] md:mx-5">
-                        Thanks for recalling the anger incident! You are now paired with a partner to help you resolve the angry feelings and provide solutions. Your partner is an AI designed to help with emotion regulation / an expert who is experienced in emotion regulation                    </CardTitle>
+                        Thanks for recalling the anger incident! You are now paired with a partner to help you resolve the angry feelings and provide solutions. Your partner is {type} designed to help with emotion regulation / an expert who is experienced in emotion regulation.
+                    </CardTitle>
                 </div>
                 <CardDescription className="font-semibold text-xl text-[#212B36] md:mx-5 mb-5">
                     Participant Time: {Math.floor(typingTime / 60)} minutes {Math.floor((typingTime % 60))} seconds

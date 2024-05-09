@@ -84,10 +84,10 @@ m. Add shortenings/abbreviations such as IDK, PLS, OK, etc.
 a. You must ensure your responses are completely neutral, focusing on practical strategies
 without expressing any emotions or empathy.
 b. You must avoid using exclamation marks or interjections at any time for any responses.
-      START CONTEXT BLOCK
-      ${updatedMessages}
-      END OF CONTEXT BLOCK
-      CONTEXT BLOCK is the history of conversation you being host with user, you need to analyze it and don't repeat the question if it is already answered.`;
+START HISTORY BLOCK
+${updatedMessages}
+END OF HISTORY BLOCK
+HISTORY BLOCK is the history of conversation you being host with user, initially it maybe empty but as your converstion build up it'll give you the context of conversation, you need to analyze it and don't repeat the question if it is already answered in the HISTORY Block.`;
 
         const gptResponse = await openai.chat.completions.create({
             model: 'gpt-4',
@@ -184,10 +184,10 @@ export async function host2(inputText: any, updatedMessages: any) {
         a. You must ensure your responses are completely neutral, focusing on practical strategies
         without expressing any emotions or empathy.
         b. You must avoid using exclamation marks or interjections at any time for any responses.
-        START CONTEXT BLOCK
+        START HISTORY BLOCK
         ${updatedMessages}
-        END OF CONTEXT BLOCK
-        CONTEXT BLOCK is the history of conversation you being host with user, you need to analyze it and don't repeat the question if it is already answered.`;
+        END OF HISTORY BLOCK
+        HISTORY BLOCK is the history of conversation you being host with user, initially it maybe empty but as your converstion build up it'll give you the context of conversation, you need to analyze it and don't repeat the question if it is already answered in the HISTORY Block.`;
 
         const gptResponse = await openai.chat.completions.create({
             model: 'gpt-4',
@@ -197,7 +197,7 @@ export async function host2(inputText: any, updatedMessages: any) {
             ],
             max_tokens: 500,
         });
-        return { res: gptResponse.choices[0].message.content, name: 'host2', type: 'Human' };
+        return { res: gptResponse.choices[0].message.content, name: 'host2', type: 'Human Expert' };
     } catch (error) {
         console.log(error);
     }
@@ -286,10 +286,10 @@ export async function host3(inputText: any, updatedMessages: any) {
         the level of anger expression throughout all your responses.
         b. You must use exclamation marks and interjections to show that you share participants'
         feelings of anger.
-        START CONTEXT BLOCK
+        START HISTORY BLOCK
         ${updatedMessages}
-        END OF CONTEXT BLOCK
-        CONTEXT BLOCK is the history of conversation you being host with user, you need to analyze it and don't repeat the question if it is already answered.`;
+        END OF HISTORY BLOCK
+        HISTORY BLOCK is the history of conversation you being host with user, initially it maybe empty but as your converstion build up it'll give you the context of conversation, you need to analyze it and don't repeat the question if it is already answered in the HISTORY Block.`;
 
         const gptResponse = await openai.chat.completions.create({
             model: 'gpt-4',
@@ -388,10 +388,10 @@ export async function host4(inputText: any, updatedMessages: any) {
         the level of anger expression throughout all your responses.
         b. You must use exclamation marks and interjections to show that you share participants'
         feelings of anger.
-        START CONTEXT BLOCK
+        START HISTORY BLOCK
         ${updatedMessages}
-        END OF CONTEXT BLOCK
-        CONTEXT BLOCK is the history of conversation you being host with user, you need to analyze it and don't repeat the question if it is already answered.`;
+        END OF HISTORY BLOCK
+        HISTORY BLOCK is the history of conversation you being host with user, initially it maybe empty but as your converstion build up it'll give you the context of conversation, you need to analyze it and don't repeat the question if it is already answered in the HISTORY Block.`;
 
         const gptResponse = await openai.chat.completions.create({
             model: 'gpt-4',
@@ -401,7 +401,7 @@ export async function host4(inputText: any, updatedMessages: any) {
             ],
             max_tokens: 500,
         });
-        return { res: gptResponse.choices[0].message.content, name: 'host4', type: 'Human' };
+        return { res: gptResponse.choices[0].message.content, name: 'host4', type: 'Human Expert' };
     } catch (error) {
         console.log(error);
     }
