@@ -139,17 +139,13 @@ export function ChatbotCard() {
     return (
         <Card className="w-full border-0 md:border md:border-[2px] flex-col items-center justify-center mb-10">
             <Card className="w-full md:w-[650px] mt-10 mb-10 mx-auto border-0 md:border">
-                <CardDescription className="font-semibold text-xl text-[#212B36] md:mx-5 mb-5 mt-5">
-                    Participant Time: {Math.floor(typingTime / 60)} minutes {Math.floor((typingTime % 60))} seconds
-                </CardDescription>
-                <hr className="w-full mb-10" />
                 <Card
                     style={{
                         border: 'solid white',
                         overflowY: 'auto',
                     }}
                     ref={messagesContainerRef}
-                    className="w-full md:w-[620px] h-[442px] mx-auto mb-5"
+                    className="w-full md:w-[620px] h-[442px] mx-auto mb-5 mt-5"
                 >
                     <div className="flex flex-col space-y-5">
                         {messages.map((message, index) => (
