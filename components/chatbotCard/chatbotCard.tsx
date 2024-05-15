@@ -42,12 +42,6 @@ export function ChatbotCard() {
         if (!response || !mturkId) {
             router.push('/');
         } else {
-            // const robotMessage: Message = {
-            //     type: 'robot',
-            //     content: `I'm a timer robot served to remind you when time is up. Here's the incident that ${name} recalled. You may start the discussion now.`
-            // };
-            // let updatedMessages = [...messages, robotMessage];
-            // setMessages(updatedMessages);
             handleChatSubmit();
         }
     }, [response, mturkId, router]);
