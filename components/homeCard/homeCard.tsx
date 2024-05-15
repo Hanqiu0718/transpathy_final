@@ -3,6 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { Card, CardContent, CardDescription } from '../ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
+import { host1, host2, host3, host4 } from '@/server-actions';
 import { Input } from '../ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -11,13 +12,18 @@ import { useRouter } from 'next/navigation';
 import { useUser } from '@/providers/context';
 import { Textarea } from '../ui/textarea';
 
+
 export function HomeCard() {
     const router = useRouter();
-    const { setMturkId, setResponse } = useUser();
-
+    const { setMturkId, setResponse, setName, setIndex } = useUser();
+    const randomIndex = Math.floor(Math.random() * 4);
+    
     const FormSchema = z.object({
         id: z.string().min(3, {
             message: 'Please enter your Mturk ID',
+        }),
+        name: z.string().min(3, {
+            message: 'Please enter your name',
         }),
         response: z
             .string().min(10, {
@@ -32,13 +38,16 @@ export function HomeCard() {
         defaultValues: {
             id: '',
             response: '',
+            name: '',
         },
     });
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
-        setMturkId(data.id)
-        setResponse(data.response)
-        router.push('/chatbot');
+        setMturkId(data.id);
+        setResponse(data.response);
+        setName(data.name);
+        setIndex(randomIndex)
+        router.push('/info');
     }
 
     return (
@@ -59,6 +68,23 @@ export function HomeCard() {
                                         <Input
                                             className="text-[#212B36]"
                                             placeholder="Enter Mturk ID"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-[#212B36]">Name</FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            className="text-[#212B36]"
+                                            placeholder="Enter your name"
                                             {...field}
                                         />
                                     </FormControl>

@@ -11,27 +11,26 @@ import { Message } from '@/global';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/providers/context';
 import { host1, host2, host3, host4, setMessagesInDB } from '@/server-actions';
-import { useToast } from '../ui/use-toast';
-
-const hosts = [host1, host2, host3, host4];
-const randomIndex = Math.floor(Math.random() * 3);
-const host = hosts[randomIndex];
 
 export function ChatbotCard() {
 
     const router = useRouter();
     const [inputText, setInputText] = useState('');
+    const { response, mturkId, index, name } = useUser();
     const [loading, setLoading] = useState(false);
-    const [messages, setMessages] = useState<Message[]>([]);
-    const { response, mturkId } = useUser();
+    const [messages, setMessages] = useState<Message[]>([{
+        type: 'robot',
+        content: `I'm a timer robot served to remind you when time is up. Here's the incident that ${name} recalled. You may start the discussion now.`
+    }]);
     const [inputDisabled, setInputDisabled] = useState(false);
     const [typingStartTime, setTypingStartTime] = useState<number | null>(null);
     const [typingTime, setTypingTime] = useState<number>(0);
     const [openDiscussion, setOpenDiscussion] = useState(false);
-    const [type, setType] = useState('');
     const [resetCount, setResetCount] = useState<number>(0);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
-    const { toast } = useToast()
+
+    const hosts = [host1, host2, host3, host4];
+    const host = hosts[index];
 
     useEffect(() => {
         if (messagesContainerRef.current) {
@@ -43,6 +42,12 @@ export function ChatbotCard() {
         if (!response || !mturkId) {
             router.push('/');
         } else {
+            // const robotMessage: Message = {
+            //     type: 'robot',
+            //     content: `I'm a timer robot served to remind you when time is up. Here's the incident that ${name} recalled. You may start the discussion now.`
+            // };
+            // let updatedMessages = [...messages, robotMessage];
+            // setMessages(updatedMessages);
             handleChatSubmit();
         }
     }, [response, mturkId, router]);
@@ -54,7 +59,7 @@ export function ChatbotCard() {
         }
     };
     const handleChatSubmit = async () => {
-        const isFirstResponse = messages.length === 0 && response;
+        const isFirstResponse = messages.length === 1 && response;
         const userInput = isFirstResponse ? response : inputText;
         const userMessage: Message = {
             type: 'user',
@@ -73,7 +78,6 @@ export function ChatbotCard() {
                 content: response?.res ?? '',
                 userId: response.name,
             };
-            setType(response.type);
             updatedMessages = [...updatedMessages, hostMessage];
             await setMessagesInDB([userMessage, hostMessage]);
             setTimeout(async () => {
@@ -110,43 +114,23 @@ export function ChatbotCard() {
     }, [inputText]);
 
     useEffect(() => {
-        if (resetCount < 1 && typingTime >= 150 && typingTime < 160) {
-            toast({
-                variant: "destructive",
-                title: '30 seconds left for this section',
-            });
-        }
-
         if (resetCount === 1) {
             setOpenDiscussion(true);
-        }
-
-        if (resetCount === 1 && typingTime >= 90 && typingTime < 100) {
-            toast({
-                variant: "destructive",
-                title: '30 seconds left for this section',
-            });
         }
 
         if (resetCount === 1 && typingTime >= 120) {
             setInputDisabled(true);
             const nextSectionMessage: Message = {
-                type: 'host',
+                type: 'robot',
                 content: "Oh, it's nice talking with you today. Good Bye!",
-                userId: 'Host',
             };
             setMessages(prevMessages => [...prevMessages, nextSectionMessage]);
         }
 
         if (resetCount < 1 && typingTime >= 180) {
-            toast({
-                variant: "destructive",
-                title: 'Time is up for this section.',
-            });
             const nextSectionMessage: Message = {
-                type: 'host',
-                content: "Let's move on to open discussion.",
-                userId: 'Host',
+                type: 'robot',
+                content: `Time is up! Now it's time for the open discussion. If you would like to continue the discussion, feel free to continue. If you no longer want to chat, anytime, click "Next" at the bottom right of your page and exit your chat window.`
             };
             setMessages(prevMessages => [...prevMessages, nextSectionMessage]);
             setTypingTime(0);
@@ -154,21 +138,16 @@ export function ChatbotCard() {
         }
     }, [resetCount, typingTime]);
 
+    const nextButtonHandler = () => {
+        router.push('/exit');
+    }
+
     return (
         <Card className="w-full border-0 md:border md:border-[2px] flex-col items-center justify-center mb-10">
             <Card className="w-full md:w-[650px] mt-10 mb-10 mx-auto border-0 md:border">
-                <div className="flex items-center justify-between">
-                    <CardTitle className="text-base mt-5 mb-5 text-[#212B36] md:mx-5">
-                        Thanks for recalling the anger incident! You are now paired with a partner to help you resolve the angry feelings and provide solutions. Your partner is {type} designed to help with emotion regulation / an expert who is experienced in emotion regulation.
-                    </CardTitle>
-                </div>
-                <CardDescription className="font-semibold text-xl text-[#212B36] md:mx-5 mb-5">
+                <CardDescription className="font-semibold text-xl text-[#212B36] md:mx-5 mb-5 mt-5">
                     Participant Time: {Math.floor(typingTime / 60)} minutes {Math.floor((typingTime % 60))} seconds
                 </CardDescription>
-                {openDiscussion && <CardDescription className="text-base text-[#212B36] md:mx-5 mb-5">
-                    Open Discussion Time
-                </CardDescription>
-                }
                 <hr className="w-full mb-10" />
                 <Card
                     style={{
@@ -207,6 +186,40 @@ export function ChatbotCard() {
                                             </p>
                                         </div>
                                         <p style={{ fontSize: '10px', color: '#637381' }}>
+                                            {new Date().toLocaleTimeString('en-US', {
+                                                hour: 'numeric',
+                                                minute: 'numeric',
+                                                hour12: true,
+                                            })}
+                                        </p>
+                                    </div>
+                                )}
+                                {message.type === 'robot' && (
+                                    <div>
+                                        <p style={{ fontSize: '12px', color: '#637381' }}>
+                                            Timer Robot
+                                        </p>
+                                        <div
+                                            style={{
+                                                top: '629px',
+                                                left: '596.56px',
+                                                padding: '12px 20px',
+                                                borderRadius: '0px 16px 16px 16px',
+                                                gap: '10px',
+                                                backgroundColor: '#FF0000',
+                                            }}
+                                            className="w-full md:w-[351px]"
+                                        >
+                                            <p style={{ fontSize: '14px', color: '#FFFFFF' }}>
+                                                {message.content}
+                                            </p>
+                                        </div>
+                                        <p
+                                            style={{
+                                                fontSize: '10px',
+                                                color: '#637381',
+                                            }}
+                                        >
                                             {new Date().toLocaleTimeString('en-US', {
                                                 hour: 'numeric',
                                                 minute: 'numeric',
@@ -287,6 +300,13 @@ export function ChatbotCard() {
                     </Button>
                 </form>
             </Card>
+            {openDiscussion && (
+                <div className="flex justify-end mt-5 mx-5 mb-5">
+                    <Button className="ml-auto" variant="outline" onClick={nextButtonHandler}>
+                        Next
+                    </Button>
+                </div>
+            )}
         </Card>
     );
 }
