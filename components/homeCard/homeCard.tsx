@@ -26,10 +26,8 @@ export function HomeCard() {
             message: 'Please enter your name',
         }),
         response: z
-            .string().min(10, {
-                message: "Response must be at least 10 characters.",
-            }).max(800, {
-                message: "Response must not be longer than 200 words.",
+            .string().min(800, {
+                message: "Response must be at least 200 words.",
             }),
     });
 
