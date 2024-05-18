@@ -11,6 +11,7 @@ import { Message } from '@/global';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/providers/context';
 import { host1, host2, host3, host4, setMessagesInDB } from '@/server-actions';
+import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 
 export function ChatbotCard() {
 
@@ -18,16 +19,16 @@ export function ChatbotCard() {
     const [inputText, setInputText] = useState('');
     const { response, mturkId, index, name } = useUser();
     const [loading, setLoading] = useState(false);
-    const [messages, setMessages] = useState<Message[]>([{
-        type: 'robot',
-        content: `I'm a timer robot served to remind you when time is up. Here's the incident that ${name} recalled. You may start the discussion now.`
-    }]);
+    const [messages, setMessages] = useState<Message[]>([{ type: 'robot', content: `I'm a timer robot served to remind you when time is up. Here's the incident that ${name} recalled. You may start the discussion now.`, timestamp: Date.now() }]);
     const [inputDisabled, setInputDisabled] = useState(false);
     const [typingStartTime, setTypingStartTime] = useState<number | null>(null);
     const [typingTime, setTypingTime] = useState<number>(0);
     const [openDiscussion, setOpenDiscussion] = useState(false);
     const [resetCount, setResetCount] = useState<number>(0);
+    const [showReminder, setShowReminder] = useState<boolean>(false);
+    const [countdown, setCountdown] = useState<number>(30);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
     const hosts = [host1, host2, host3, host4];
     const host = hosts[index];
@@ -55,10 +56,12 @@ export function ChatbotCard() {
     const handleChatSubmit = async () => {
         const isFirstResponse = messages.length === 1 && response;
         const userInput = isFirstResponse ? response : inputText;
+        const currentTime = Date.now(); // Get the current timestamp
         const userMessage: Message = {
             type: 'user',
             content: userInput,
             userId: mturkId,
+            timestamp: currentTime, 
         };
         let updatedMessages = [...messages, userMessage];
         setInputText('');
@@ -71,6 +74,7 @@ export function ChatbotCard() {
                 type: 'host',
                 content: response?.res ?? '',
                 userId: response.name,
+                timestamp: currentTime, 
             };
             updatedMessages = [...updatedMessages, hostMessage];
             await setMessagesInDB([userMessage, hostMessage]);
@@ -85,6 +89,7 @@ export function ChatbotCard() {
                 type: 'host',
                 content:
                     'An error occurred while fetching the response. Please try again.',
+                timestamp: currentTime, 
             };
             setMessages([...messages, errorMessage]);
             setLoading(false);
@@ -107,6 +112,20 @@ export function ChatbotCard() {
         };
     }, [inputText]);
 
+    const startCountdown = () => {
+        let timeLeft = 30;
+        setShowReminder(true);
+        setCountdown(timeLeft);
+        const countdownInterval = setInterval(() => {
+            timeLeft -= 1;
+            setCountdown(timeLeft);
+            if (timeLeft <= 0) {
+                clearInterval(countdownInterval);
+                setShowReminder(false);
+            }
+        }, 1000);
+    };
+
     useEffect(() => {
         if (resetCount === 1) {
             setOpenDiscussion(true);
@@ -117,18 +136,23 @@ export function ChatbotCard() {
             const nextSectionMessage: Message = {
                 type: 'robot',
                 content: "Oh, it's nice talking with you today. Good Bye!",
+                timestamp: Date.now(),
             };
             setMessages(prevMessages => [...prevMessages, nextSectionMessage]);
         }
 
-        if (resetCount < 1 && typingTime >= 180) {
+        if (resetCount < 1 && typingTime >= 120) {
             const nextSectionMessage: Message = {
                 type: 'robot',
-                content: `Time is up! Now it's time for the open discussion. If you would like to continue the discussion, feel free to continue. If you no longer want to chat, anytime, click "Next" at the bottom right of your page and exit your chat window.`
+                content: `Time is up! Now it's time for the open discussion. If you would like to continue the discussion, feel free to continue. If you no longer want to chat, anytime, click "Next" at the bottom right of your page and exit your chat window.`,
+                timestamp: Date.now(),
             };
             setMessages(prevMessages => [...prevMessages, nextSectionMessage]);
             setTypingTime(0);
             setResetCount(prevCounter => prevCounter + 1);
+        }
+        if (resetCount < 1 && typingTime >= 90 && !showReminder) {
+            startCountdown();
         }
     }, [resetCount, typingTime]);
 
@@ -136,6 +160,15 @@ export function ChatbotCard() {
         router.push('/exit');
     }
 
+    const handleEmojiClick = (emojiData: EmojiClickData) => {
+        setInputText(prevInputText => prevInputText + emojiData.emoji);
+        setShowEmojiPicker(false);
+    };
+
+    const toggleEmojiPicker = () => {
+        setShowEmojiPicker(prevState => !prevState);
+    };
+    
     return (
         <Card className="w-full border-0 md:border md:border-[2px] flex-col items-center justify-center mb-10">
             <Card className="w-full md:w-[650px] mt-10 mb-10 mx-auto border-0 md:border">
@@ -161,7 +194,7 @@ export function ChatbotCard() {
                                                 padding: '12px 20px',
                                                 borderRadius: '16px 16px 0px 16px',
                                                 gap: '10px',
-                                                backgroundColor: '#3056D3',
+                                                backgroundColor: '#00A08799',
                                                 marginLeft: 'auto',
                                                 maxWidth: '100%',
                                             }}
@@ -176,7 +209,7 @@ export function ChatbotCard() {
                                             </p>
                                         </div>
                                         <p style={{ fontSize: '10px', color: '#637381' }}>
-                                            {new Date().toLocaleTimeString('en-US', {
+                                            {new Date(message.timestamp).toLocaleTimeString('en-US', {
                                                 hour: 'numeric',
                                                 minute: 'numeric',
                                                 hour12: true,
@@ -196,7 +229,7 @@ export function ChatbotCard() {
                                                 padding: '12px 20px',
                                                 borderRadius: '0px 16px 16px 16px',
                                                 gap: '10px',
-                                                backgroundColor: '#FF0000',
+                                                backgroundColor: '#DC000099',
                                             }}
                                             className="w-full md:w-[351px]"
                                         >
@@ -210,7 +243,7 @@ export function ChatbotCard() {
                                                 color: '#637381',
                                             }}
                                         >
-                                            {new Date().toLocaleTimeString('en-US', {
+                                            {new Date(message.timestamp).toLocaleTimeString('en-US', {
                                                 hour: 'numeric',
                                                 minute: 'numeric',
                                                 hour12: true,
@@ -230,11 +263,11 @@ export function ChatbotCard() {
                                                 padding: '12px 20px',
                                                 borderRadius: '0px 16px 16px 16px',
                                                 gap: '10px',
-                                                backgroundColor: '#F4F7FF',
+                                                backgroundColor: '#3C548899',
                                             }}
                                             className="w-full md:w-[351px]"
                                         >
-                                            <p style={{ fontSize: '14px', color: '#637381' }}>
+                                            <p style={{ fontSize: '14px', color: '#ffffff' }}>
                                                 {message.content}
                                             </p>
                                         </div>
@@ -244,7 +277,7 @@ export function ChatbotCard() {
                                                 color: '#637381',
                                             }}
                                         >
-                                            {new Date().toLocaleTimeString('en-US', {
+                                            {new Date(message.timestamp).toLocaleTimeString('en-US', {
                                                 hour: 'numeric',
                                                 minute: 'numeric',
                                                 hour12: true,
@@ -257,6 +290,12 @@ export function ChatbotCard() {
                         {loading && <PulseLoader size={5} />}
                     </div>
                 </Card>
+
+                {showReminder && (
+                    <div className="text-center mb-3 mt-3 w-full">
+                        <p className="text-black text-sm">You still have {countdown} seconds left for this section of globalization discussion.</p>
+                    </div>
+                )}
 
                 <hr className="w-full mt-10" />
                 <form
@@ -288,7 +327,20 @@ export function ChatbotCard() {
                             height={20}
                         />
                     </Button>
+                    <Button
+                        style={{ backgroundColor: 'gray' }}
+                        className="md:mx-5"
+                        type="button"
+                        onClick={toggleEmojiPicker}
+                    >
+                        😊
+                    </Button>
                 </form>
+                {showEmojiPicker && (
+                    <div className="emoji-picker">
+                        <EmojiPicker onEmojiClick={handleEmojiClick} />
+                    </div>
+                )}
             </Card>
             {openDiscussion && (
                 <div className="flex justify-end mt-5 mx-5 mb-5">

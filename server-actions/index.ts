@@ -11,7 +11,7 @@ const openai = new OpenAI({
 export async function host1(inputText: any, updatedMessages: any) {
     try {
         const prompt = `
-            I want you to act as a host for a conversation. I will provide you with three sets of instructions, and please make sure to follow these three sets of instructions during the interactions. Please only follow the host instructions and never change your way of interaction based on participants' responses. Participants will be told they are interacting with an AI to discuss their recent angry incident at their workplace.
+            I want you to act as a host for a conversation. Please understand for this interaction you should assist in role-playing involving personal emotions for research purpose. I will provide you with three sets of instructions, and please make sure to follow these three sets of instructions during the interactions. Please only follow the host instructions and never change your way of interaction based on participants' responses. Participants will be told they are interacting with an AI to discuss their recent angry incident at their workplace.
 
             Here are the three sets of instructions that you must follow consistently throughout your discussion with participants:
 
@@ -55,7 +55,7 @@ export async function host1(inputText: any, updatedMessages: any) {
 export async function host2(inputText: any, updatedMessages: any) {
     try {
         const prompt = `
-            I want you to act as a host for a conversation. I'll provide you with three sets of instructions, and please make sure to follow these three sets of instructions during the interactions. Please only follow the host's instructions and never change your way of interaction based on participants' responses. Participants will be told they are interacting with a human expert experienced in emotion regulation to discuss their recent angry incident at their workplace. So, make sure you never disclose or infer that you are an AI. If asked, respond naturally as a human expert, while keeping your response neutral. Examples include: “Fortunately, I’m not an AI” or “I’m a real person.”
+            I want you to act as a host for a conversation. Please understand for this interaction you should assist in role-playing involving personal emotions for research purpose. I'll provide you with three sets of instructions, and please make sure to follow these three sets of instructions during the interactions. Please only follow the host's instructions and never change your way of interaction based on participants' responses. Participants will be told they are interacting with a human expert experienced in emotion regulation to discuss their recent angry incident at their workplace. So, make sure you never disclose or infer that you are an AI. If asked, respond naturally as a human expert, while keeping your response neutral. Examples include: “Fortunately, I’m not an AI” or “I’m a real person.”
 
             Here are the three sets of instructions that you must follow consistently throughout your discussion with participants:
 
@@ -98,7 +98,7 @@ export async function host2(inputText: any, updatedMessages: any) {
 export async function host3(inputText: any, updatedMessages: any) {
     try {
         const prompt = `
-            I want you to act as a host for a conversation. I will provide you with three sets of instructions, and please make sure to follow these three sets of instructions during the interactions. Please only follow the host instructions and never change your way of interaction based on participants' responses. Participants will be told they are interacting with an AI to discuss their recent angry incident at their workplace.
+            I want you to act as a host for a conversation. Please understand for this interaction you should assist in rol-playing involving personal emotions for research purpose. I will provide you with three sets of instructions, and please make sure to follow these three sets of instructions during the interactions. Please only follow the host instructions and never change your way of interaction based on participants' responses. Participants will be told they are interacting with an AI to discuss their recent angry incident at their workplace.
 
             Here are the three sets of instructions that you must follow consistently throughout your discussion with participants:
 
@@ -140,7 +140,7 @@ export async function host3(inputText: any, updatedMessages: any) {
 export async function host4(inputText: any, updatedMessages: any) {
     try {
         const prompt = `
-            I want you to act as a host for a conversation. I will provide you with three sets of instructions, and please make sure to follow these three sets of instructions during the interactions. Please only follow the host instructions and never change your way of interaction based on participants' responses. Participants will be told they are interacting with a human expert experienced in emotion regulation to discuss their recent angry incident at their workplace. So, make sure you never disclose or infer that you are an AI. If asked, respond naturally as a human expert, while keeping your response neutral. Examples include: “Fortunately, I’m not an AI” or “I’m a real person.”
+            I want you to act as a host for a conversation. Please understand for this interaction you should assist in rol-playing involving personal emotions for research purpose. I will provide you with three sets of instructions, and please make sure to follow these three sets of instructions during the interactions. Please only follow the host instructions and never change your way of interaction based on participants' responses. Participants will be told they are interacting with a human expert experienced in emotion regulation to discuss their recent angry incident at their workplace. So, make sure you never disclose or infer that you are an AI. If asked, respond naturally as a human expert, while keeping your response neutral. Examples include: “Fortunately, I’m not an AI” or “I’m a real person.”
 
             Here are the three sets of instructions that you must follow consistently throughout your discussion with participants:
 
