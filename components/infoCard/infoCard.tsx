@@ -9,7 +9,7 @@ import { useUser } from "@/providers/context";
 
 export function InfoCard() {
     const router = useRouter();
-    const { mturkId, name, response, index } = useUser();
+    const { mturkId, name, response, index, response_consent } = useUser();
     const types = ['generative AI', 'an expert experienced in emotion regulation', 'generative AI', 'an expert experienced in emotion regulation']
     const type = types[index];
 
