@@ -1,8 +1,9 @@
 'use client';
 
-import { Card, CardDescription, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import React, { useEffect, useRef, useState } from 'react';
 import vector from '../../public/vector.svg';
+
 import Image from 'next/image';
 import PulseLoader from "react-spinners/PulseLoader";
 import { Button } from '@/components/ui/button';
@@ -75,7 +76,7 @@ export function ChatbotCard() {
                 timestamp: currentTime,
             };
             updatedMessages = [...updatedMessages, hostMessage];
-            await setMessagesInDB([userMessage, hostMessage]);
+            await setMessagesInDB(mturkId, [userMessage, hostMessage]);
             setTimeout(async () => {
                 setMessages(updatedMessages);
                 setLoading(false);

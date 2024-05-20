@@ -8,11 +8,7 @@ type UserContextType = {
     name: string;
     response: string;
     index: number;
-<<<<<<< Updated upstream
-    setResponse: (value: string) => void;
-=======
     setResponse_consent: (value: string) => void;
->>>>>>> Stashed changes
     setMturkId: (value: string) => void;
     setName: (value: string) => void;
     setResponse: (value: string) => void;
@@ -25,11 +21,7 @@ type UserContextType = {
     name: '',
     response: '',
     index: 0,
-<<<<<<< Updated upstream
-    setResponse: () => {},
-=======
     setResponse_consent: () => { },
->>>>>>> Stashed changes
     setMturkId: () => {},
     setName: () => {},
     setResponse: () => {},
@@ -44,16 +36,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [name, setName] = useState<string>('');
   const [response, setResponse] = useState<string>('');
   const [index, setIndex] = useState<number>(0);
-<<<<<<< Updated upstream
-
-  return (
-    <UserContext.Provider value={{ response, setResponse, mturkId, setMturkId, name, setName, index, setIndex}}>
-=======
 
 
   return (
     <UserContext.Provider value={{response_consent, setResponse_consent, mturkId, setMturkId, name, setName, response, setResponse, index, setIndex}}>
->>>>>>> Stashed changes
       {children}
     </UserContext.Provider>
   );
