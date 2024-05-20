@@ -8,11 +8,11 @@ type UserContextType = {
     name: string;
     response: string;
     index: number;
-    setResponse_consent: (value: string) => void;
     setMturkId: (value: string) => void;
     setName: (value: string) => void;
     setResponse: (value: string) => void;
     setIndex: (value: number) => void;
+    setResponse_consent: (value: string) => void;
 };
   
   const userContextDefaultValues: UserContextType = {
@@ -21,11 +21,11 @@ type UserContextType = {
     name: '',
     response: '',
     index: 0,
-    setResponse_consent: () => { },
     setMturkId: () => {},
     setName: () => {},
     setResponse: () => {},
     setIndex: () => {},
+    setResponse_consent: () => { },
 };
 
 const UserContext = createContext<UserContextType>(userContextDefaultValues);
@@ -37,12 +37,12 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [response, setResponse] = useState<string>('');
   const [index, setIndex] = useState<number>(0);
 
-
   return (
-    <UserContext.Provider value={{response_consent, setResponse_consent, mturkId, setMturkId, name, setName, response, setResponse, index, setIndex}}>
+    <UserContext.Provider value={{ response, setResponse, mturkId, setMturkId, name, setName, index, setIndex, response_consent, setResponse_consent}}>
       {children}
     </UserContext.Provider>
   );
 };
 
 export const useUser = () => useContext(UserContext);
+

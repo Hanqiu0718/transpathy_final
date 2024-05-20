@@ -14,6 +14,7 @@ import { Textarea } from '../ui/textarea';
 
 export function DetailsCard() {
   const router = useRouter();
+  const { response_consent, setMturkId, setName, setIndex, response } = useUser();
   const { setMturkId, setName, setIndex, setResponse, response_consent } = useUser();
   const randomIndex = Math.floor(Math.random() * 4);
 
@@ -75,8 +76,8 @@ export function DetailsCard() {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       id: '',
-      name: '',
       response: '',
+      name: '',
       currentAngry: '',
       jobSatisfaction: '',
       upset: '',
@@ -147,9 +148,7 @@ export function DetailsCard() {
               name="response"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[#212B36]">
-                    Please recall and describe a recent work-related anger incident in detail, as well as describe the feeling of anger you had during the experience. You should write at least 200 words to continue to the next page.
-                  </FormLabel>
+                  <FormLabel className="text-[#212B36]">Please recall and describe a recent work-related anger incident in detail, as well as describe the feeling of anger you had during the experience. You should write at least 200 words to continue to the next page.</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Your response...."
@@ -171,9 +170,7 @@ export function DetailsCard() {
               name="currentAngry"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[#212B36] font-bold">
-                    Think about your recalled incident, to what extent do you feel angry?
-                  </FormLabel>
+                  <FormLabel className="text-[#212B36] font-bold">Think about your recalled incident, to what extent do you feel angry?</FormLabel>
                   <FormControl>
                     <div className="space-y-2 text-sm">
                       <label className="block my-1">
@@ -244,9 +241,7 @@ export function DetailsCard() {
               name="jobSatisfaction"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[#212B36] font-bold">
-                    How are you satisfied with your job?
-                  </FormLabel>
+                  <FormLabel className="text-[#212B36] font-bold">How are you satisfied with your job?</FormLabel>
                   <FormControl>
                     <div className="space-y-2 text-sm">
                       <label className="block my-1">
@@ -313,26 +308,24 @@ export function DetailsCard() {
 
             {/* Current Emotions */}
             <FormItem>
-              <FormLabel className="text-[#212B36] font-bold">
-                Thinking about yourself and how you feel at this moment, to what extent do you feel the following now:
-              </FormLabel>
-              <table className="w-full text-sm border-collapse border border-gray-300">
+              <FormLabel className="text-[#212B36] font-bold">Thinking about yourself and how you feel at this moment, to what extent do you feel the following now:</FormLabel>
+              <table className="w-full text-sm">
                 <thead>
                   <tr>
-                    <th className="border border-gray-300"></th>
-                    <th className="font-normal border border-gray-300">Very slightly or not at all</th>
-                    <th className="font-normal border border-gray-300">A little</th>
-                    <th className="font-normal border border-gray-300">Moderately</th>
-                    <th className="font-normal border border-gray-300">Quite a bit</th>
-                    <th className="font-normal border border-gray-300">Extremely</th>
+                    <th></th>
+                    <th className="font-normal">Very slightly or not at all</th>
+                    <th className="font-normal">A little</th>
+                    <th className="font-normal">Moderately</th>
+                    <th className="font-normal">Quite a bit</th>
+                    <th className="font-normal">Extremely</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {['upset', 'hostile', 'alert', 'ashamed', 'inspired', 'nervous', 'determined', 'attentive', 'afraid', 'active'].map((emotion, index) => (
-                    <tr key={emotion} className={index < 9 ? 'border-b border-gray-300' : ''}>
-                      <td className="border border-gray-300 text-center">{emotion.charAt(0).toUpperCase() + emotion.slice(1)}</td>
-                      {['very slightly or not at all', 'a little', 'moderately', 'quite a bit', 'extremely'].map((value) => (
-                        <td key={value} className="text-center border border-gray-300">
+                  {['upset', 'hostile', 'alert', 'ashamed', 'inspired', 'nervous', 'determined', 'attentive', 'afraid', 'active'].map(emotion => (
+                    <tr key={emotion}>
+                      <td>{emotion.charAt(0).toUpperCase() + emotion.slice(1)}</td>
+                      {['very slightly or not at all', 'a little', 'moderately', 'quite a bit', 'extremely'].map(value => (
+                        <td key={value} className="text-center">
                           <FormField
                             control={form.control}
                             name={emotion as keyof z.infer<typeof FormSchema>}
@@ -356,10 +349,7 @@ export function DetailsCard() {
                 </tbody>
               </table>
             </FormItem>
-
-            <Button className="mt-5" variant="outline" type="submit">
-              Next
-            </Button>
+            <Button className="mt-5" variant="outline" type="submit">Next</Button>
           </form>
         </Form>
       </CardContent>
