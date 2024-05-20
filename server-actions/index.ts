@@ -179,12 +179,16 @@ export async function host4(inputText: any, updatedMessages: any) {
     }
 }
 
-export async function setMessagesInDB(messages: Message[]) {
+export async function setMessagesInDB(mturkId: string, messages: Message[]) {
     try {
         (await mongoClient)
             .db(process.env.MONGO_DB)
             .collection('transpathyChat')
-            .insertMany(messages);
+            .updateOne(
+                { mturkId: mturkId },
+                { $addToSet: { messages: { $each: messages } } },
+                { upsert: true }
+            );
     } catch (error) {
         console.log(error);
     }

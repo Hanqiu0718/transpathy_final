@@ -3,27 +3,27 @@
 import { createContext, useContext, useState } from 'react';
 
 type UserContextType = {
-    response: string;
+    response_consent: string | null;
     mturkId: string;
     name: string;
+    response: string;
     index: number;
-    response_consent: string | null;
-    setResponse: (value: string) => void;
     setMturkId: (value: string) => void;
     setName: (value: string) => void;
+    setResponse: (value: string) => void;
     setIndex: (value: number) => void;
     setResponse_consent: (value: string) => void;
 };
   
   const userContextDefaultValues: UserContextType = {
-    response: '',
+    response_consent: null,
     mturkId: '',
     name: '',
+    response: '',
     index: 0,
-    response_consent: null,
-    setResponse: () => {},
     setMturkId: () => {},
     setName: () => {},
+    setResponse: () => {},
     setIndex: () => {},
     setResponse_consent: () => { },
 };
@@ -31,11 +31,13 @@ type UserContextType = {
 const UserContext = createContext<UserContextType>(userContextDefaultValues);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
-    const [response, setResponse] = useState<string>('');
+  const [response_consent, setResponse_consent] = useState<string | null>(null);
   const [mturkId, setMturkId] = useState<string>('');
   const [name, setName] = useState<string>('');
+  const [response, setResponse] = useState<string>('');
   const [index, setIndex] = useState<number>(0);
   const [response_consent, setResponse_consent] = useState<string | null>(null);
+
 
   return (
     <UserContext.Provider value={{ response, setResponse, mturkId, setMturkId, name, setName, index, setIndex, response_consent, setResponse_consent}}>
