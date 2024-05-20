@@ -14,7 +14,7 @@ import { Textarea } from '../ui/textarea';
 
 export function DetailsCard() {
   const router = useRouter();
-  const { response_consent, setMturkId, setName, setIndex, response } = useUser();
+  const { response_consent, setMturkId, setName, setIndex, setResponse } = useUser();
   const randomIndex = Math.floor(Math.random() * 4);
 
   useEffect(() => {
@@ -32,8 +32,8 @@ export function DetailsCard() {
     }),
     response: z
       .string().min(800, {
-          message: "Response must be at least 200 words.",
-    }),
+        message: "Response must be at least 200 words.",
+      }),
     currentAngry: z.string().min(1, {
       message: 'Please select an option',
     }),
@@ -95,6 +95,8 @@ export function DetailsCard() {
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     setMturkId(data.id);
+    setName(data.name);
+    setResponse(data.response);
     setIndex(randomIndex);
     router.push('/info');
   }
@@ -346,6 +348,7 @@ export function DetailsCard() {
                   ))}
                 </tbody>
               </table>
+              <FormMessage />
             </FormItem>
 
             <Button className="mt-5" variant="outline" type="submit">Next</Button>

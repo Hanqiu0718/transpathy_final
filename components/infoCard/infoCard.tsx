@@ -14,7 +14,7 @@ export function InfoCard() {
     const type = types[index];
 
     useEffect(() => {
-        if (!mturkId || !name || !response) {
+        if (!mturkId || !name) {
             router.push('/');
         }
     }, [mturkId, name, response, router]);

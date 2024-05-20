@@ -56,7 +56,7 @@ export function ChatbotCard() {
     const handleChatSubmit = async () => {
         const isFirstResponse = messages.length === 1 && response;
         const userInput = isFirstResponse ? response : inputText;
-        const currentTime = Date.now(); // Get the current timestamp
+        const currentTime = Date.now();
         const userMessage: Message = {
             type: 'user',
             content: userInput,
@@ -77,7 +77,7 @@ export function ChatbotCard() {
                 timestamp: currentTime, 
             };
             updatedMessages = [...updatedMessages, hostMessage];
-            await setMessagesInDB([userMessage, hostMessage]);
+            await setMessagesInDB(mturkId, [userMessage, hostMessage]);
             setTimeout(async () => {
                 setMessages(updatedMessages);
                 setLoading(false);
