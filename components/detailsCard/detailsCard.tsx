@@ -14,8 +14,7 @@ import { Textarea } from '../ui/textarea';
 
 export function DetailsCard() {
   const router = useRouter();
-  const { response_consent, setMturkId, setName, setIndex, response } = useUser();
-  const { setMturkId, setName, setIndex, setResponse, response_consent } = useUser();
+  const { response_consent, setMturkId, setName, setIndex, response, setResponse } = useUser();
   const randomIndex = Math.floor(Math.random() * 4);
 
   useEffect(() => {
