@@ -36,8 +36,6 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [name, setName] = useState<string>('');
   const [response, setResponse] = useState<string>('');
   const [index, setIndex] = useState<number>(0);
-  const [response_consent, setResponse_consent] = useState<string | null>(null);
-
 
   return (
     <UserContext.Provider value={{ response, setResponse, mturkId, setMturkId, name, setName, index, setIndex, response_consent, setResponse_consent}}>
