@@ -14,7 +14,6 @@ import { host1, host2, host3, host4, setMessagesInDB } from '@/server-actions';
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 
 export function ChatbotCard() {
-
     const router = useRouter();
     const [inputText, setInputText] = useState('');
     const { response, mturkId, index, name } = useUser();
@@ -25,8 +24,6 @@ export function ChatbotCard() {
     const [typingTime, setTypingTime] = useState<number>(0);
     const [openDiscussion, setOpenDiscussion] = useState(false);
     const [resetCount, setResetCount] = useState<number>(0);
-    const [showReminder, setShowReminder] = useState<boolean>(false);
-    const [countdown, setCountdown] = useState<number>(30);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -40,7 +37,7 @@ export function ChatbotCard() {
     }, [messages]);
 
     useEffect(() => {
-        if (!response || !mturkId) {
+        if (!mturkId) {
             router.push('/');
         } else {
             handleChatSubmit();
@@ -53,6 +50,7 @@ export function ChatbotCard() {
             setTypingStartTime(Date.now());
         }
     };
+
     const handleChatSubmit = async () => {
         const isFirstResponse = messages.length === 1 && response;
         const userInput = isFirstResponse ? response : inputText;
@@ -61,7 +59,7 @@ export function ChatbotCard() {
             type: 'user',
             content: userInput,
             userId: mturkId,
-            timestamp: currentTime, 
+            timestamp: currentTime,
         };
         let updatedMessages = [...messages, userMessage];
         setInputText('');
@@ -69,12 +67,12 @@ export function ChatbotCard() {
         setMessages(updatedMessages);
         setLoading(true);
         try {
-            const response: any = await host(inputText, updatedMessages);
+            const response: any = await host(userInput, updatedMessages);
             const hostMessage: Message = {
                 type: 'host',
                 content: response?.res ?? '',
                 userId: response.name,
-                timestamp: currentTime, 
+                timestamp: currentTime,
             };
             updatedMessages = [...updatedMessages, hostMessage];
             await setMessagesInDB([userMessage, hostMessage]);
@@ -89,13 +87,14 @@ export function ChatbotCard() {
                 type: 'host',
                 content:
                     'An error occurred while fetching the response. Please try again.',
-                timestamp: currentTime, 
+                timestamp: currentTime,
             };
             setMessages([...messages, errorMessage]);
             setLoading(false);
             setInputDisabled(false);
         }
     };
+
     const handleKeyUp = () => {
         if (typingStartTime) {
             const timeDifference = Date.now() - typingStartTime;
@@ -103,6 +102,8 @@ export function ChatbotCard() {
             setTypingStartTime(null);
         }
     };
+
+
     useEffect(() => {
         return () => {
             if (typingStartTime) {
@@ -112,19 +113,6 @@ export function ChatbotCard() {
         };
     }, [inputText]);
 
-    const startCountdown = () => {
-        let timeLeft = 30;
-        setShowReminder(true);
-        setCountdown(timeLeft);
-        const countdownInterval = setInterval(() => {
-            timeLeft -= 1;
-            setCountdown(timeLeft);
-            if (timeLeft <= 0) {
-                clearInterval(countdownInterval);
-                setShowReminder(false);
-            }
-        }, 1000);
-    };
 
     useEffect(() => {
         if (resetCount === 1) {
@@ -144,15 +132,12 @@ export function ChatbotCard() {
         if (resetCount < 1 && typingTime >= 120) {
             const nextSectionMessage: Message = {
                 type: 'robot',
-                content: `Time is up! Now it's time for the open discussion. If you would like to continue the discussion, feel free to continue. If you no longer want to chat, anytime, click "Next" at the bottom right of your page and exit your chat window.`,
+                content: `Time is up! Now it's time for the open discussion. If you would like to continue the discussion, feel free to continue. Anytime during the open discussion, if you no longer want to chat, click "Next" at the bottom right of your page and exit your chat window. Now, simply type and send "Yes" to continue, or click "Next" to exit.`,
                 timestamp: Date.now(),
             };
             setMessages(prevMessages => [...prevMessages, nextSectionMessage]);
             setTypingTime(0);
             setResetCount(prevCounter => prevCounter + 1);
-        }
-        if (resetCount < 1 && typingTime >= 90 && !showReminder) {
-            startCountdown();
         }
     }, [resetCount, typingTime]);
 
@@ -168,7 +153,7 @@ export function ChatbotCard() {
     const toggleEmojiPicker = () => {
         setShowEmojiPicker(prevState => !prevState);
     };
-    
+
     return (
         <Card className="w-full border-0 md:border md:border-[2px] flex-col items-center justify-center mb-10">
             <Card className="w-full md:w-[650px] mt-10 mb-10 mx-auto border-0 md:border">
@@ -291,11 +276,6 @@ export function ChatbotCard() {
                     </div>
                 </Card>
 
-                {showReminder && (
-                    <div className="text-center mb-3 mt-3 w-full">
-                        <p className="text-black text-sm">You still have {countdown} seconds left for this section of globalization discussion.</p>
-                    </div>
-                )}
 
                 <hr className="w-full mt-10" />
                 <form
