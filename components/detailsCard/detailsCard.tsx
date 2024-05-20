@@ -308,24 +308,26 @@ export function DetailsCard() {
 
             {/* Current Emotions */}
             <FormItem>
-              <FormLabel className="text-[#212B36] font-bold">Thinking about yourself and how you feel at this moment, to what extent do you feel the following now:</FormLabel>
-              <table className="w-full text-sm">
+              <FormLabel className="text-[#212B36] font-bold">
+                Thinking about yourself and how you feel at this moment, to what extent do you feel the following now:
+              </FormLabel>
+              <table className="w-full text-sm border-collapse border border-gray-300">
                 <thead>
                   <tr>
-                    <th></th>
-                    <th className="font-normal">Very slightly or not at all</th>
-                    <th className="font-normal">A little</th>
-                    <th className="font-normal">Moderately</th>
-                    <th className="font-normal">Quite a bit</th>
-                    <th className="font-normal">Extremely</th>
+                    <th className="border border-gray-300"></th>
+                    <th className="font-normal border border-gray-300">Very slightly or not at all</th>
+                    <th className="font-normal border border-gray-300">A little</th>
+                    <th className="font-normal border border-gray-300">Moderately</th>
+                    <th className="font-normal border border-gray-300">Quite a bit</th>
+                    <th className="font-normal border border-gray-300">Extremely</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {['upset', 'hostile', 'alert', 'ashamed', 'inspired', 'nervous', 'determined', 'attentive', 'afraid', 'active'].map(emotion => (
-                    <tr key={emotion}>
-                      <td>{emotion.charAt(0).toUpperCase() + emotion.slice(1)}</td>
-                      {['very slightly or not at all', 'a little', 'moderately', 'quite a bit', 'extremely'].map(value => (
-                        <td key={value} className="text-center">
+                  {['upset', 'hostile', 'alert', 'ashamed', 'inspired', 'nervous', 'determined', 'attentive', 'afraid', 'active'].map((emotion, index) => (
+                    <tr key={emotion} className={index < 9 ? 'border-b border-gray-300' : ''}>
+                      <td className="border border-gray-300 text-center">{emotion.charAt(0).toUpperCase() + emotion.slice(1)}</td>
+                      {['very slightly or not at all', 'a little', 'moderately', 'quite a bit', 'extremely'].map((value) => (
+                        <td key={value} className="text-center border border-gray-300">
                           <FormField
                             control={form.control}
                             name={emotion as keyof z.infer<typeof FormSchema>}
@@ -348,7 +350,6 @@ export function DetailsCard() {
                   ))}
                 </tbody>
               </table>
-              <FormMessage />
             </FormItem>
 
             <Button className="mt-5" variant="outline" type="submit">Next</Button>
