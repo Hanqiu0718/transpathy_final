@@ -31,8 +31,8 @@ export function DetailsCard() {
       message: 'Please enter your name',
     }),
     response: z
-      .string().min(800, {
-        message: "Response must be at least 200 words.",
+      .string().min(400, {
+        message: "Response must be at least 100 words.",
       }),
     currentAngry: z.string().min(1, {
       message: 'Please select an option',
@@ -148,7 +148,7 @@ export function DetailsCard() {
               name="response"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[#212B36]">Please recall and describe a recent work-related anger incident in detail, as well as describe the feeling of anger you had during the experience. You should write at least 200 words to continue to the next page.</FormLabel>
+                  <FormLabel className="text-[#212B36]">Please recall and describe a recent work-related anger incident in detail, as well as describe the feeling of anger you had during the experience. You should write at least 100 words to continue to the next page.</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Your response...."
