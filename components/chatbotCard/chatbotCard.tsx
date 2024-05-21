@@ -86,7 +86,7 @@ export function ChatbotCard() {
         } catch (error) {
             console.error('Error fetching data from OpenAI:', error);
             const errorMessage: Message = {
-                type: 'host',
+                type: 'robot',
                 content:
                     'An error occurred while fetching the response. Please try again.',
                 timestamp: currentTime, 
