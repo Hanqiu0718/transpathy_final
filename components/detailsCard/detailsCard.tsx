@@ -1,6 +1,6 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
+import { useForm} from 'react-hook-form';
 import { Card, CardContent, CardDescription } from '../ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
 import { Input } from '../ui/input';
@@ -9,13 +9,14 @@ import { z } from 'zod';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/providers/context';
-import { useEffect } from 'react';
+import { useEffect,useState } from 'react';
 import { Textarea } from '../ui/textarea';
 
 export function DetailsCard() {
   const router = useRouter();
   const { response_consent, setMturkId, setName, setIndex, setResponse } = useUser();
   const randomIndex = Math.floor(Math.random() * 4);
+  const [wordCount, setWordCount] = useState(0);
 
   useEffect(() => {
     if (!response_consent) {
@@ -31,9 +32,10 @@ export function DetailsCard() {
       message: 'Please enter your name',
     }),
     response: z
-      .string().min(400, {
-        message: "Response must be at least 100 words.",
-      }),
+    .string()
+    .refine(value => value.split(' ').filter(word => word.length > 0).length >= 100, {
+      message: "Response must be at least 100 words.",
+    }),
     currentAngry: z.string().min(1, {
       message: 'Please select an option',
     }),
@@ -101,6 +103,11 @@ export function DetailsCard() {
     router.push('/info');
   }
 
+  const handleResponseChange = (value: string) => {
+    setWordCount(value.split(' ').filter(word => word.length > 0).length);
+    form.setValue('response', value);
+  };
+
   return (
     <Card className="w-full border md:border-[2px] flex-col items-center justify-center mb-10">
       <CardDescription className="font-semibold text-xl border-b md:border-b-0 mt-3 text-[#212B36] md:mx-5 pb-3 md:pb-0">
@@ -148,15 +155,19 @@ export function DetailsCard() {
               name="response"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[#212B36]">Please recall and describe a recent work-related anger incident in detail, as well as describe the feeling of anger you had during the experience. You should write at least 100 words to continue to the next page.</FormLabel>
+                  <FormLabel className="text-[#212B36]">Please recall a recent work-related anger incident in detail, as well as describe the feeling of anger you had during the experience. Your recalled incident will be shared with your discussion partner. You should write at least 100 words to continue to the next page.</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder="Your response...."
                       className="text-[#212B36]"
                       {...field}
+                      onChange={(e) => handleResponseChange(e.target.value)}
                     />
                   </FormControl>
                   <FormMessage />
+                  <div className="text-right text-gray-500">
+                    Word count: {wordCount}
+                  </div>
                 </FormItem>
               )}
             />

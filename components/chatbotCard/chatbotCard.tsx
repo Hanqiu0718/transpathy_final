@@ -19,14 +19,12 @@ export function ChatbotCard() {
     const [inputText, setInputText] = useState('');
     const { response, mturkId, index, name } = useUser();
     const [loading, setLoading] = useState(false);
-    const [messages, setMessages] = useState<Message[]>([{ type: 'robot', content: `I'm a timer robot served to remind you when time is up. Here's the incident that ${name} recalled. You may start the discussion now.`, timestamp: Date.now() }]);
+    const [messages, setMessages] = useState<Message[]>([{ type: 'robot', content: `I'm a timer robot served to remind you when time is up. Here's the incident that ${name} recalled. You may start the discussion now. Please note that you can only submit one message in each discussion round, so write your complete thoughts each time for better experience.`, timestamp: Date.now() }]);
     const [inputDisabled, setInputDisabled] = useState(false);
     const [typingStartTime, setTypingStartTime] = useState<number | null>(null);
     const [typingTime, setTypingTime] = useState<number>(0);
     const [openDiscussion, setOpenDiscussion] = useState(false);
     const [resetCount, setResetCount] = useState<number>(0);
-    const [showReminder, setShowReminder] = useState<boolean>(false);
-    const [countdown, setCountdown] = useState<number>(30);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -69,7 +67,8 @@ export function ChatbotCard() {
         setMessages(updatedMessages);
         setLoading(true);
         try {
-            const response: any = await host(inputText, updatedMessages);
+            const updatedMessagesString = JSON.stringify(updatedMessages);
+            const response: any = await host(inputText, updatedMessagesString);
             const hostMessage: Message = {
                 type: 'host',
                 content: response?.res ?? '',
@@ -112,19 +111,6 @@ export function ChatbotCard() {
         };
     }, [inputText]);
 
-    const startCountdown = () => {
-        let timeLeft = 30;
-        setShowReminder(true);
-        setCountdown(timeLeft);
-        const countdownInterval = setInterval(() => {
-            timeLeft -= 1;
-            setCountdown(timeLeft);
-            if (timeLeft <= 0) {
-                clearInterval(countdownInterval);
-                setShowReminder(false);
-            }
-        }, 1000);
-    };
 
     useEffect(() => {
         if (resetCount === 1) {
@@ -150,9 +136,6 @@ export function ChatbotCard() {
             setMessages(prevMessages => [...prevMessages, nextSectionMessage]);
             setTypingTime(0);
             setResetCount(prevCounter => prevCounter + 1);
-        }
-        if (resetCount < 1 && typingTime >= 90 && !showReminder) {
-            startCountdown();
         }
     }, [resetCount, typingTime]);
 
@@ -290,12 +273,6 @@ export function ChatbotCard() {
                         {loading && <PulseLoader size={5} />}
                     </div>
                 </Card>
-
-                {showReminder && (
-                    <div className="text-center mb-3 mt-3 w-full">
-                        <p className="text-black text-sm">You still have {countdown} seconds left for this section of globalization discussion.</p>
-                    </div>
-                )}
 
                 <hr className="w-full mt-10" />
                 <form
