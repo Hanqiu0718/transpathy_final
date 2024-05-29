@@ -15,7 +15,7 @@ async function getHostResponse(prompt: string, inputText: string): Promise<strin
             { role: 'system', content: prompt },
             { role: 'user', content: inputText },
         ],
-        max_tokens: 100,
+        max_tokens: 150,
     });
 
     let response = gptResponse.choices[0]?.message.content ?? '';
