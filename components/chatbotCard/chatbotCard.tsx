@@ -27,6 +27,7 @@ export function ChatbotCard() {
     const [resetCount, setResetCount] = useState<number>(0);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const hosts = [host1, host2, host3, host4];
     const host = hosts[index];
@@ -47,6 +48,7 @@ export function ChatbotCard() {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputText(e.target.value);
+        setErrorMessage('');
         if (!typingStartTime) {
             setTypingStartTime(Date.now());
         }
@@ -54,6 +56,12 @@ export function ChatbotCard() {
     const handleChatSubmit = async () => {
         const isFirstResponse = messages.length === 1 && response;
         const userInput = isFirstResponse ? response : inputText;
+        const wordCount = userInput.trim().split(/\s+/).length;
+
+        if (wordCount < 6) {
+            setErrorMessage('Please type more words to submit.');
+            return;
+        }
         const currentTime = Date.now();
         const userMessage: Message = {
             type: 'user',
@@ -319,6 +327,9 @@ export function ChatbotCard() {
                     <div className="emoji-picker">
                         <EmojiPicker onEmojiClick={handleEmojiClick} />
                     </div>
+                )}
+            {errorMessage && (
+                    <div className="text-red-500 text-center mb-2">{errorMessage}</div>
                 )}
             </Card>
             {openDiscussion && (
