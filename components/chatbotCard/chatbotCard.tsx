@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardDescription, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import React, { useEffect, useRef, useState } from 'react';
 import vector from '../../public/vector.svg';
 import Image from 'next/image';
@@ -28,6 +28,8 @@ export function ChatbotCard() {
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [overallTime, setOverallTime] = useState(0);
+    const overallTimerRef = useRef<number | null>(null);
 
     const hosts = [host1, host2, host3, host4];
     const host = hosts[index];
@@ -37,6 +39,17 @@ export function ChatbotCard() {
             messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
         }
     }, [messages]);
+
+    useEffect(() => {
+        overallTimerRef.current = window.setInterval(() => {
+            setOverallTime(prevTime => prevTime + 1);
+        }, 1000);
+        return () => {
+            if (overallTimerRef.current) {
+                clearInterval(overallTimerRef.current);
+            }
+        };
+    }, []);
 
     useEffect(() => {
         if (!response || !mturkId) {
@@ -119,6 +132,32 @@ export function ChatbotCard() {
         };
     }, [inputText]);
 
+    useEffect(() => {
+        if (overallTime==1200) {
+            setOpenDiscussion(true);
+        }
+
+        if (overallTime==2400) {
+            setInputDisabled(true);
+            const nextSectionMessage: Message = {
+                type: 'robot',
+                content: "Oh, it's nice talking with you today. Good Bye!",
+                timestamp: Date.now(),
+            };
+            setMessages(prevMessages => [...prevMessages, nextSectionMessage]);
+            setMessagesInDB(mturkId, [...messages, nextSectionMessage]);
+        }
+
+        if (overallTime==1200) {
+            const nextSectionMessage: Message = {
+                type: 'robot',
+                content: `Time is up! Now it's time for the open discussion. If you would like to continue the discussion, feel free to continue. If you no longer want to chat, anytime, click "Next" at the bottom right of your page and exit your chat window.`,
+                timestamp: Date.now(),
+            };
+            setMessages(prevMessages => [...prevMessages, nextSectionMessage]);
+            setMessagesInDB(mturkId, [...messages, nextSectionMessage]);
+        }
+    }, [overallTime]);
 
     useEffect(() => {
         if (resetCount === 1) {
