@@ -37,7 +37,7 @@ export function InfoCard() {
             </div>
             <div className="mt-3 mx-5">
                 <label htmlFor="partnerInput" className="block text-sm font-medium text-[#212B36]">
-                    Now, answer the following question and click "Next" to continue to the chat page. Who is your discussion partner?
+                Now, answer the following question and click &quot;Next&quot; to continue to the chat page. Who is your discussion partner?
                 </label>
                 <input
                     type="text"
