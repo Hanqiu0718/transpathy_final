@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import { useUser } from '@/providers/context';
 import { useEffect,useState } from 'react';
 import { Textarea } from '../ui/textarea';
+import { setDetailsInDB } from '@/server-actions';
 
 export function DetailsCard() {
   const router = useRouter();
@@ -95,12 +96,17 @@ export function DetailsCard() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
     setMturkId(data.id);
     setName(data.name);
     setResponse(data.response);
     setIndex(randomIndex);
-    router.push('/info');
+    try {
+      await setDetailsInDB(data);
+      router.push('/info');
+    } catch (error) {
+      console.error("Error saving details:", error);
+    }
   }
 
   const handleResponseChange = (value: string) => {

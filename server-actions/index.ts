@@ -15,7 +15,7 @@ async function getHostResponse(prompt: string, inputText: string): Promise<strin
             { role: 'system', content: prompt },
             { role: 'user', content: inputText },
         ],
-        max_tokens: 150,
+        max_tokens: 300,
     });
 
     let response = gptResponse.choices[0]?.message.content ?? '';
@@ -195,6 +195,36 @@ export async function setMessagesInDB(mturkId: string, messages: Message[]) {
             .updateOne(
                 { mturkId: mturkId },
                 { $addToSet: { messages: { $each: messages } } },
+                { upsert: true }
+            );
+    } catch (error) {
+        console.log(error);
+    }
+}
+export async function setDetailsInDB(data: any) {
+    try {
+        (await mongoClient)
+            .db(process.env.MONGO_DB)
+            .collection('transpathyChat')
+            .updateOne(
+                { mturkId: data.id },
+                {
+                    $set: {
+                        name: data.name,
+                        currentAngry: data.currentAngry,
+                        jobSatisfaction: data.jobSatisfaction,
+                        upset: data.upset,
+                        hostile: data.hostile,
+                        alert: data.alert,
+                        ashamed: data.ashamed,
+                        inspired: data.inspired,
+                        nervous: data.nervous,
+                        determined: data.determined,
+                        attentive: data.attentive,
+                        afraid: data.afraid,
+                        active: data.active,
+                    }
+                },
                 { upsert: true }
             );
     } catch (error) {
