@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, CardDescription, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import React, { useEffect, useRef, useState } from 'react';
 import vector from '../../public/vector.svg';
 import Image from 'next/image';
@@ -27,6 +27,9 @@ export function ChatbotCard() {
     const [resetCount, setResetCount] = useState<number>(0);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [overallTime, setOverallTime] = useState(0);
+    const overallTimerRef = useRef<number | null>(null);
 
     const hosts = [host1, host2, host3, host4];
     const host = hosts[index];
@@ -38,6 +41,17 @@ export function ChatbotCard() {
     }, [messages]);
 
     useEffect(() => {
+        overallTimerRef.current = window.setInterval(() => {
+            setOverallTime(prevTime => prevTime + 1);
+        }, 1000);
+        return () => {
+            if (overallTimerRef.current) {
+                clearInterval(overallTimerRef.current);
+            }
+        };
+    }, []);
+
+    useEffect(() => {
         if (!response || !mturkId) {
             router.push('/');
         } else {
@@ -47,6 +61,7 @@ export function ChatbotCard() {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputText(e.target.value);
+        setErrorMessage('');
         if (!typingStartTime) {
             setTypingStartTime(Date.now());
         }
@@ -54,6 +69,12 @@ export function ChatbotCard() {
     const handleChatSubmit = async () => {
         const isFirstResponse = messages.length === 1 && response;
         const userInput = isFirstResponse ? response : inputText;
+        const wordCount = userInput.trim().split(/\s+/).length;
+
+        if (wordCount < 6) {
+            setErrorMessage('Please type more words to submit.');
+            return;
+        }
         const currentTime = Date.now();
         const userMessage: Message = {
             type: 'user',
@@ -76,7 +97,7 @@ export function ChatbotCard() {
                 timestamp: currentTime, 
             };
             updatedMessages = [...updatedMessages, hostMessage];
-            await setMessagesInDB(mturkId, [userMessage, hostMessage]);
+            await setMessagesInDB(mturkId, updatedMessages);
             setTimeout(async () => {
                 setMessages(updatedMessages);
                 setLoading(false);
@@ -111,6 +132,32 @@ export function ChatbotCard() {
         };
     }, [inputText]);
 
+    useEffect(() => {
+        if (overallTime==1200) {
+            setOpenDiscussion(true);
+        }
+
+        if (overallTime==2400) {
+            setInputDisabled(true);
+            const nextSectionMessage: Message = {
+                type: 'robot',
+                content: "Oh, it's nice talking with you today. Good Bye!",
+                timestamp: Date.now(),
+            };
+            setMessages(prevMessages => [...prevMessages, nextSectionMessage]);
+            setMessagesInDB(mturkId, [...messages, nextSectionMessage]);
+        }
+
+        if (overallTime==1200) {
+            const nextSectionMessage: Message = {
+                type: 'robot',
+                content: `Time is up! Now it's time for the open discussion. If you would like to continue the discussion, feel free to continue. If you no longer want to chat, anytime, click "Next" at the bottom right of your page and exit your chat window.`,
+                timestamp: Date.now(),
+            };
+            setMessages(prevMessages => [...prevMessages, nextSectionMessage]);
+            setMessagesInDB(mturkId, [...messages, nextSectionMessage]);
+        }
+    }, [overallTime]);
 
     useEffect(() => {
         if (resetCount === 1) {
@@ -125,6 +172,7 @@ export function ChatbotCard() {
                 timestamp: Date.now(),
             };
             setMessages(prevMessages => [...prevMessages, nextSectionMessage]);
+            setMessagesInDB(mturkId, [...messages, nextSectionMessage]);
         }
 
         if (resetCount < 1 && typingTime >= 120) {
@@ -136,6 +184,7 @@ export function ChatbotCard() {
             setMessages(prevMessages => [...prevMessages, nextSectionMessage]);
             setTypingTime(0);
             setResetCount(prevCounter => prevCounter + 1);
+            setMessagesInDB(mturkId, [...messages, nextSectionMessage]);
         }
     }, [resetCount, typingTime]);
 
@@ -317,6 +366,9 @@ export function ChatbotCard() {
                     <div className="emoji-picker">
                         <EmojiPicker onEmojiClick={handleEmojiClick} />
                     </div>
+                )}
+            {errorMessage && (
+                    <div className="text-red-500 text-center mb-2">{errorMessage}</div>
                 )}
             </Card>
             {openDiscussion && (

@@ -1,6 +1,6 @@
 'use client';
 
-import { useForm} from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { Card, CardContent, CardDescription } from '../ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
 import { Input } from '../ui/input';
@@ -9,8 +9,9 @@ import { z } from 'zod';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/providers/context';
-import { useEffect,useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Textarea } from '../ui/textarea';
+import { setDetailsInDB } from '@/server-actions';
 
 export function DetailsCard() {
   const router = useRouter();
@@ -32,10 +33,10 @@ export function DetailsCard() {
       message: 'Please enter your name',
     }),
     response: z
-    .string()
-    .refine(value => value.split(' ').filter(word => word.length > 0).length >= 100, {
-      message: "Response must be at least 100 words.",
-    }),
+      .string()
+      .refine(value => value.split(' ').filter(word => word.length > 0).length >= 100, {
+        message: "Response must be at least 100 words.",
+      }),
     currentAngry: z.string().min(1, {
       message: 'Please select an option',
     }),
@@ -95,12 +96,17 @@ export function DetailsCard() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
     setMturkId(data.id);
     setName(data.name);
     setResponse(data.response);
     setIndex(randomIndex);
-    router.push('/info');
+    try {
+      await setDetailsInDB(data);
+      router.push('/info');
+    } catch (error) {
+      console.error("Error saving details:", error);
+    }
   }
 
   const handleResponseChange = (value: string) => {
