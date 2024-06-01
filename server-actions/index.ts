@@ -201,34 +201,3 @@ export async function setMessagesInDB(mturkId: string, messages: Message[]) {
         console.log(error);
     }
 }
-
-export async function setDetailsInDB(data: any) {
-    try {
-        (await mongoClient)
-            .db(process.env.MONGO_DB)
-            .collection('transpathyChat')
-            .updateOne(
-                { mturkId: data.id },
-                {
-                    $set: {
-                        name: data.name,
-                        currentAngry: data.currentAngry,
-                        jobSatisfaction: data.jobSatisfaction,
-                        upset: data.upset,
-                        hostile: data.hostile,
-                        alert: data.alert,
-                        ashamed: data.ashamed,
-                        inspired: data.inspired,
-                        nervous: data.nervous,
-                        determined: data.determined,
-                        attentive: data.attentive,
-                        afraid: data.afraid,
-                        active: data.active,
-                    }
-                },
-                { upsert: true }
-            );
-    } catch (error) {
-        console.log(error);
-    }
-}

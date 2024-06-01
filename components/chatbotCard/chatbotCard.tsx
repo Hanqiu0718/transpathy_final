@@ -97,7 +97,7 @@ export function ChatbotCard() {
                 timestamp: currentTime, 
             };
             updatedMessages = [...updatedMessages, hostMessage];
-            await setMessagesInDB(mturkId, updatedMessages);
+            await setMessagesInDB(mturkId, [userMessage, hostMessage]);
             setTimeout(async () => {
                 setMessages(updatedMessages);
                 setLoading(false);
@@ -172,7 +172,6 @@ export function ChatbotCard() {
                 timestamp: Date.now(),
             };
             setMessages(prevMessages => [...prevMessages, nextSectionMessage]);
-            setMessagesInDB(mturkId, [...messages, nextSectionMessage]);
         }
 
         if (resetCount < 1 && typingTime >= 120) {
@@ -184,7 +183,6 @@ export function ChatbotCard() {
             setMessages(prevMessages => [...prevMessages, nextSectionMessage]);
             setTypingTime(0);
             setResetCount(prevCounter => prevCounter + 1);
-            setMessagesInDB(mturkId, [...messages, nextSectionMessage]);
         }
     }, [resetCount, typingTime]);
 
