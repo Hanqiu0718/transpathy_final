@@ -35,7 +35,7 @@ export function InfoCard() {
                     <strong>Instructions for Structured Discussion:</strong><br /><br />
 
                     Start Message: Your recalled incident will be automatically sent to your discussion partner. They will start the conversation.<br /><br />
-                    Send your message: <strong>Please note that you can only send one message at a time</strong>, so each time when it is your turn to sena a message, please type all you have in mind in one message for better experience.<br /><br />
+                    Send your message: Please note that <strong>you can only send one message at a time</strong>, so each time when it is your turn to send a message, please type all you want to say in one message for better experience.<br /><br />
                     Wait for a Reply: After sending your message, please wait for your partner to respond before you send another.<br /><br />
                     Complete <strong>Five Rounds</strong>: Continue this process until you and your partner have exchanged five messages each.<br /><br />
                     Proceed to Open Discussion: Once you have completed the five rounds, you can move to the open discussion phase.<br /><br /><br />
