@@ -144,7 +144,7 @@ export function DetailsCard() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-[#212B36]">Name</FormLabel>
+                  <FormLabel className="text-[#212B36]">Name - Feel free to use your preferred name.</FormLabel>
                   <FormControl>
                     <Input
                       className="text-[#212B36]"

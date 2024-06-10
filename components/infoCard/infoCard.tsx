@@ -9,7 +9,7 @@ import { useUser } from "@/providers/context";
 export function InfoCard() {
     const router = useRouter();
     const { mturkId, name, response, index, response_consent } = useUser();
-    const types = ['generative AI', 'an expert experienced in emotion regulation', 'generative AI', 'an expert experienced in emotion regulation'];
+    const types = ['generative AI', 'another person who is an expert in emotion regulation', 'generative AI', 'another person who is an expert in emotion regulation'];
     const type = types[index];
     const [partner, setPartner] = useState('');
 
@@ -29,15 +29,27 @@ export function InfoCard() {
 
     return (
         <Card className="w-full border-0 md:border md:border-[2px] flex-col items-center justify-center mb-10">
-            <div className="flex items-center justify-between">
-                <CardTitle className="text-base mt-5 mb-5 text-[#212B36] md:mx-5">
-                    You will be chatting with <strong>{type}</strong> to discuss your incident.
-                    You will need to <strong>type</strong> for in total of 2 minutes for this discussion section in order to move on. So please make sure to type complete sentences for each message you send.
+            <div className="mt-3 mx-5">
+                <CardTitle className="block text-sm font-medium text-[#212B36]">
+                    You will be chatting with <strong>{type}</strong> to discuss your incident. Please read the following instructions carefully.<br /><br /><br />
+                    <strong>Instructions for Structured Discussion:</strong><br /><br />
+
+                    Start Message: Your recalled incident will be automatically sent to your discussion partner. They will start the conversation.<br /><br />
+                    Send your message: <strong>Please note that you can only send one message at a time</strong>, so each time when it's your turn to sena a message, please type all you have in mind in one message for better experience.<br /><br />
+                    Wait for a Reply: After sending your message, please wait for your partner to respond before you send another.<br /><br />
+                    Complete <strong>Five Rounds</strong>: Continue this process until you and your partner have exchanged five messages each.<br /><br />
+                    Proceed to Open Discussion: Once you've completed the five rounds, you can move to the open discussion phase.<br /><br /><br />
+                   
+                    <strong>Instructions for Open Discussion:</strong><br /><br />
+
+                    No Time Limit: In the open discussion, there is no limit to how many messages you can exchange.<br /><br />
+                    End Anytime: Feel free to continue discussing as long as you like, but you can end the discussion at any time if you feel the conversation has concluded.<br /><br /><br />
                 </CardTitle>
             </div>
             <div className="mt-3 mx-5">
                 <label htmlFor="partnerInput" className="block text-sm font-medium text-[#212B36]">
-                Now, answer the following question and click &quot;Next&quot; to continue to the chat page. Who is your discussion partner?
+                Now, answer the following question and click &quot;Next&quot; to continue to the chat page.<br /><br /> 
+                <strong>According to the instruction above, who are you chatting with?</strong>
                 </label>
                 <input
                     type="text"
