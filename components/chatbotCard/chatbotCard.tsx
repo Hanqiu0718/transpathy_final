@@ -85,7 +85,7 @@ export function ChatbotCard() {
                 setMessages(updatedMessages);
                 setLoading(false);
                 setInputDisabled(false);
-            }, 20000);
+            }, 30000);
         } catch (error) {
             console.error('Error fetching data from OpenAI:', error);
             const errorMessage: Message = {
