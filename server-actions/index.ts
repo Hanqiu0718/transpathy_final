@@ -10,7 +10,7 @@ const openai = new OpenAI({
 
 async function getHostResponse(prompt: string, inputText: string): Promise<string> {
     const gptResponse = await openai.chat.completions.create({
-        model: 'gpt-4',
+        model: 'gpt-4o-mini',
         messages: [
             { role: 'system', content: prompt },
             { role: 'user', content: inputText },
@@ -53,6 +53,7 @@ export async function host1(inputText: string, updatedMessages: string): Promise
             You are now directly interacting with the participant. You should never call the participant "participant", directly jump in to do reappraisal.
 
             Avoid asking what happened at the workplace again. Acknowledge and analyze the recalled situation.
+            Note: Your response should not exceed to 300 characters.
 
             START HISTORY BLOCK
             ${updatedMessages}
@@ -93,6 +94,7 @@ export async function host2(inputText: string, updatedMessages: string): Promise
             You are now directly interacting with the participant. You should never call the participant "participant", directly jump in to do reappraisal.
 
             Avoid asking what happened at the workplace again. Acknowledge and analyze the recalled situation.
+            Note: Your response should not exceed to 300 characters.
 
             START HISTORY BLOCK
             ${updatedMessages}
@@ -133,6 +135,7 @@ export async function host3(inputText: string, updatedMessages: string): Promise
             You are now directly interacting with the participant. You should never call the participant "participant", directly jump in to do reappraisal.
 
             Avoid asking what happened at the workplace again. Acknowledge and analyze the recalled situation.
+            Note: Your response should not exceed to 300 characters.
 
             START HISTORY BLOCK
             ${updatedMessages}
@@ -173,7 +176,8 @@ export async function host4(inputText: string, updatedMessages: string): Promise
             You are now directly interacting with the participant. You should never call the participant "participant", directly jump in to do reappraisal.
 
             Avoid asking what happened at the workplace again. Acknowledge and analyze the recalled situation.
-
+            Note: Your response should not exceed to 300 characters.
+            
             START HISTORY BLOCK
             ${updatedMessages}
             END OF HISTORY BLOCK

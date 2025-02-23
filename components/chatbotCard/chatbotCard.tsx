@@ -27,7 +27,7 @@ export function ChatbotCard() {
 
     const hosts = [host1, host2, host3, host4];
     const host = hosts[index];
-
+    console.log(index);
     useEffect(() => {
         if (messagesContainerRef.current) {
             messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
@@ -68,8 +68,10 @@ export function ChatbotCard() {
         setInputText('');
         setInputDisabled(true);
         setMessages(updatedMessages);
-        setLoading(true);
-
+        const loaderDelay = 3000 + Math.floor(Math.random() * 2000);
+        const loaderTimer = setTimeout(() => {
+            setLoading(true);
+        }, loaderDelay);
         try {
             const updatedMessagesString = JSON.stringify(updatedMessages);
             const response: any = await host(inputText, updatedMessagesString);
@@ -80,12 +82,13 @@ export function ChatbotCard() {
                 timestamp: currentTime,
             };
             updatedMessages = [...updatedMessages, hostMessage];
-            await setMessagesInDB(mturkId, updatedMessages);
-            setTimeout(async () => {
+            const randomDelay = Math.floor(Math.random() * (50 - 30 + 1) + 30) * 1000;
+            setTimeout(() => {
                 setMessages(updatedMessages);
                 setLoading(false);
                 setInputDisabled(false);
-            }, 30000);
+            }, randomDelay);
+
         } catch (error) {
             console.error('Error fetching data from OpenAI:', error);
             const errorMessage: Message = {

@@ -21,7 +21,7 @@ export function InfoCard() {
 
     const nextButtonHandler = () => {
         if (partner.trim() !== '') {
-            router.push('/chatbot');
+            router.push('/matching');
         } else {
             alert('Please answer the question about your discussion partner before continuing.');
         }
