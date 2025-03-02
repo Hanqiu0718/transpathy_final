@@ -43,7 +43,7 @@ export default function MatchingCard() {
       ) : (
         <div className="w-full max-w-2xl">
           <h2 className="text-2xl font-semibold text-center mb-6">
-            Congrats, you're matched with an expert in emotion regulation.
+            Congrats, you are matched with an expert in emotion regulation.
           </h2>
           {(index === 1 || index === 3) && (
             <div className="flex items-center justify-between bg-gray-100 p-6 rounded-lg mb-6">
